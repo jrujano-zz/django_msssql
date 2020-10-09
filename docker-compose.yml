@@ -1,0 +1,26 @@
+version: "3.8"
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-CU3-ubuntu-18.04
+    container_name: sqlserver
+    user: '0:0'
+    ports:
+      - 1433:1433
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "PasswordO1."
+      MSSQL_PID: Express
+    volumes:
+      - ~/docker/sqlserver-data:/var/opt/mssql
+
+  webapp:
+    build: ./
+    image: webapp:dev
+    command: python3 manage.py runserver 0.0.0.0:8000
+    container_name: webapp
+    env_file:
+      - ./.env
+    ports:
+        - "8000:8000"
+    depends_on:
+      - sqlserver

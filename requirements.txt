@@ -1,0 +1,4 @@
+Django==3.0.10
+pyodbc==4.0.30
+djangorestframework-simplejwt
+django-mssql-backend
