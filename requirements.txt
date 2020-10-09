@@ -1,4 +1,9 @@
 Django==3.0.10
 pyodbc==4.0.30
-djangorestframework-simplejwt
-django-mssql-backend
+djangorestframework-simplejwt==4.4.0
+django-mssql-backend==2.8.1
+djangorestframework==3.12.1
+ChatterBot==1.0.5
+chatterbot-corpus==1.2.0
+channels==2.4.0
+channels-redis==3.1.0

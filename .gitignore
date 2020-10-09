@@ -23,6 +23,7 @@ media
 .idea/**/gradle.xml
 .idea/**/libraries
 *.iws /out/
+.idea/
 
 # Python #
 *.py[cod]
@@ -114,3 +115,4 @@ GitHub.sublime-settings
 !.vscode/launch.json
 !.vscode/extensions.json
 .history
+.dockerignore

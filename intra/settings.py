@@ -15,21 +15,28 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
-DEBUG = int(os.environ.get("DEBUG", default=0))
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+# SECRET_KEY = os.environ.get("SECRET_KEY")
+# DEBUG = int(os.environ.get("DEBUG", default=0))
+# ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+SECRET_KEY = "4455454"
+ALLOWED_HOSTS =['*']
+DEBUG = 1
 
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'chatterbot.ext.django_chatterbot',
+    'chat.apps.ChatConfig',
 ]
 
 MIDDLEWARE = [
@@ -47,7 +54,7 @@ ROOT_URLCONF = 'intra.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -64,29 +71,28 @@ WSGI_APPLICATION = 'intra.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': "sql_server.pyodbc",
-        'HOST':os.environ.get('MSSQL_HOST'),
-        'PORT': os.environ.get('MSSQL_PORT'),
-        'USER': os.environ.get('MSSQL_USER'),
-        'PASSWORD': os.environ.get('MSSQL_PASSWORD'),
-        'NAME': os.environ.get('MSSQL_DB', 'intra'),
-        'AUTOCOMMIT': True,
-        'OPTIONS': {
-            'driver': 'ODBC Driver 17 for SQL Server',
-        },
-    }
-}
-DATABASE_CONNECTION_POOLING = False
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#         'ENGINE': "sql_server.pyodbc",
+#         'HOST':os.environ.get('MSSQL_HOST'),
+#         'PORT': os.environ.get('MSSQL_PORT'),
+#         'USER': os.environ.get('MSSQL_USER'),
+#         'PASSWORD': os.environ.get('MSSQL_PASSWORD'),
+#         'NAME': os.environ.get('MSSQL_DB', 'intra'),
+#         'AUTOCOMMIT': True,
+#         'OPTIONS': {
+#             'driver': 'ODBC Driver 17 for SQL Server',
+#         },
 #     }
 # }
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+DATABASE_CONNECTION_POOLING = False
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -110,25 +116,43 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+LANGUAGE_CODE = 'es'
+TIME_ZONE = 'America/Santiago'
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
+DATETIME_INPUT_FORMATS = ['%Y-%m-%d %H:%M:%S']
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
 
+APPEND_SLASH=False
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
+}
+
+
+CHATTERBOT = {
+    'name': 'Super Bot',
+    'logic_adapters': [
+        'chatterbot.logic.MathematicalEvaluation',
+        'chatterbot.logic.TimeLogicAdapter',
+        'chatterbot.logic.BestMatch'
+    ]
+}
+ASGI_APPLICATION = 'routing.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
 }
